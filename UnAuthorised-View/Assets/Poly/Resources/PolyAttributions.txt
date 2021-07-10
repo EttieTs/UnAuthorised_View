@@ -1,0 +1,55 @@
+This project uses the following items from Poly (http://poly.google.com):
+
+Title: BoF 2
+Author: Виолета Ценова
+URL: https://poly.google.com/view/9LtSW2WNq_B
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: BoF Button
+Author: Виолета Ценова
+URL: https://poly.google.com/view/5uX2lHjdVNE
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: LM Button
+Author: Виолета Ценова
+URL: https://poly.google.com/view/aiTwL0t7kpg
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: Morning Button
+Author: Виолета Ценова
+URL: https://poly.google.com/view/4eNKCot7VYq
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: Muses Button
+Author: Виолета Ценова
+URL: https://poly.google.com/view/egPTCOkZ4Po
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: SoC 2
+Author: Виолета Ценова
+URL: https://poly.google.com/view/3XZraRY2Dyj
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: SoC Button
+Author: Виолета Ценова
+URL: https://poly.google.com/view/9ovjDIeXEMw
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: SoC dark
+Author: Виолета Ценова
+URL: https://poly.google.com/view/d0on5dGFKdi
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
+
+Title: UnD Button
+Author: Виолета Ценова
+URL: https://poly.google.com/view/cW7UVlcqx4B
+License: Creative Commons CC-BY
+https://creativecommons.org/licenses/by/3.0/legalcode
