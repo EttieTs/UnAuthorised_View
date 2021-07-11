@@ -40,7 +40,10 @@ public class EtMovieController : MonoBehaviour
     // ----------------------------- Look Around You ---------------------------------
 
     GameObject lookAroundYouText;
-    
+    Vector3 lastEuler1, lastEuler2;
+    int lookAroundYouCount = 0;
+    const int LookAroundAmount = 100;
+
     // ---------------------------------- State -------------------------------------
     enum ExperienceState
     {
@@ -103,6 +106,7 @@ public class EtMovieController : MonoBehaviour
 
         // ------------------------------- Look Around You -----------------------------
         lookAroundYouText.SetActive(true);
+        lookAroundYouCount = 0;
 
         // ---------------------------------- Movies --------------------------------------
         videoPlayer.Stop();
@@ -112,18 +116,22 @@ public class EtMovieController : MonoBehaviour
 
     private void EndReached(UnityEngine.Video.VideoPlayer vp)
     {
-        ClearOutRenderTexture(renderTexture);
+        // Check if it's a normal movie that's stopped - or the start movie
+        if (vp.url.Contains(StartMovie) == false)
+        {
+            ClearOutRenderTexture(renderTexture);
 
-        // Flag the movie watched
-        isWatched[lastMovieWatched] = true;
+            // Flag the movie watched
+            isWatched[lastMovieWatched] = true;
 
-        ShowButtons();
+            ShowInteractionTargets();
+        }
 
         // you can put code here to play the start video
         PlayStartMovie();
     }
 
-    private void ShowButtons()
+    private void ShowInteractionTargets()
     {
         tiltBrushSpheres.SetActive(true);
     }
@@ -349,10 +357,60 @@ public class EtMovieController : MonoBehaviour
         if ((yawPitchRoll.x > 45.0f) && (yawPitchRoll.x < 60.0f))
         {
             Debug.Log("Looking down");
-            ShowButtons();
+            ShowInteractionTargets();
         }
     }
 
+    private void LookAroundYou1()
+    {
+        Vector3 euler = GameObject.Find("Camera Controller").transform.rotation.eulerAngles;  // When we're look around in the keyboard
+
+        float diffx = Mathf.Abs(euler.x - lastEuler1.x);
+        float diffy = Mathf.Abs(euler.y - lastEuler1.y);
+        float diffz = Mathf.Abs(euler.z - lastEuler1.z);
+
+        // Log the gaze direction
+
+        if (diffx > 30 || diffy > 30 || diffz > 30)
+        {
+            ++lookAroundYouCount;
+            lastEuler1 = euler;
+        }
+    }
+
+    private void LookAroundYou2()
+    {
+        Vector3 euler = GameObject.Find("Main Camera").transform.rotation.eulerAngles; // When we're wearing the headset
+
+        float diffx = Mathf.Abs(euler.x - lastEuler2.x);
+        float diffy = Mathf.Abs(euler.y - lastEuler2.y);
+        float diffz = Mathf.Abs(euler.z - lastEuler2.z);
+
+        // Log the gaze direction
+
+        if (diffx > 30 || diffy > 30 || diffz > 30)
+        {
+            ++lookAroundYouCount;
+            lastEuler2 = euler;
+        }
+    }
+
+    private bool LookAroundYou()
+    {
+        LookAroundYou1();
+        LookAroundYou2();
+
+#if UNITY_EDITOR
+        lookAroundYouText.GetComponent<Text>().text = "Look Around You: " + lookAroundYouCount.ToString();
+#endif
+
+        if (lookAroundYouCount > LookAroundAmount)
+        {
+            return false; // end this state
+        }
+        //Debug.Log(lookAroundYouCount);
+        return true;
+    }
 
     void Update()
     {
@@ -374,14 +432,17 @@ public class EtMovieController : MonoBehaviour
             
             // User looking around
             case ExperienceState.LookAround:
-                //SetExperienceState(ExperienceState.StartPlayingMovies);
+                if (LookAroundYou() == false)
+                {
+                    SetExperienceState(ExperienceState.StartPlayingMovies);
+                }
                 break;
 
             // Reveals the Tiltbrush spheres
             case ExperienceState.StartPlayingMovies:
                 Debug.Log("ExperienceState.StartPlayingMovies");
                 lookAroundYouText.SetActive(false);
-                ShowButtons();
+                ShowInteractionTargets();
                 SetExperienceState(ExperienceState.PlayingMovies);
                 break;
 
