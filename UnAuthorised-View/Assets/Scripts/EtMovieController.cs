@@ -39,10 +39,11 @@ public class EtMovieController : MonoBehaviour
 
     // ----------------------------- Look Around You ---------------------------------
 
+    GameObject lookAroundYou;
     GameObject lookAroundYouText;
     Vector3 lastEuler1, lastEuler2;
     int lookAroundYouCount = 0;
-    const int LookAroundAmount = 100;
+    const int LookAroundAmount = 50;
 
     // ---------------------------------- State -------------------------------------
     enum ExperienceState
@@ -91,6 +92,7 @@ public class EtMovieController : MonoBehaviour
         videoPlayer.loopPointReached += EndReached;
 
         // Find the look around you text
+        lookAroundYou = GameObject.Find("LookAroundYou");
         lookAroundYouText = GameObject.Find("LookAroundYouText");
 
         // Start the experience as Resetted
@@ -105,7 +107,7 @@ public class EtMovieController : MonoBehaviour
         UnselectButtons();
 
         // ------------------------------- Look Around You -----------------------------
-        lookAroundYouText.SetActive(true);
+        lookAroundYou.SetActive(true);
         lookAroundYouCount = 0;
 
         // ---------------------------------- Movies --------------------------------------
@@ -401,7 +403,9 @@ public class EtMovieController : MonoBehaviour
         LookAroundYou2();
 
 #if UNITY_EDITOR
-        lookAroundYouText.GetComponent<Text>().text = "Look Around You: " + lookAroundYouCount.ToString();
+        float percent = (float)lookAroundYouCount / (float)LookAroundAmount * 100.0f;
+        int percentInt = (int)percent;
+        lookAroundYouText.GetComponent<Text>().text = "Look Around You: " + percentInt.ToString();
 #endif
 
         if (lookAroundYouCount > LookAroundAmount)
@@ -441,7 +445,7 @@ public class EtMovieController : MonoBehaviour
             // Reveals the Tiltbrush spheres
             case ExperienceState.StartPlayingMovies:
                 Debug.Log("ExperienceState.StartPlayingMovies");
-                lookAroundYouText.SetActive(false);
+                lookAroundYou.SetActive(false);
                 ShowInteractionTargets();
                 SetExperienceState(ExperienceState.PlayingMovies);
                 break;
