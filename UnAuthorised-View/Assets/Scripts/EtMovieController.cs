@@ -31,7 +31,7 @@ public class EtMovieController : MonoBehaviour
     float timeSelected = 0;
     const float SelectionTime = 5;          // 5 seconds
 
-    string StartMovie = "et-change-sub.mp4";
+    string StartMovie = "et-ls-startspace_2_1.mp4";
     string[] MovieNames = new string[] { "et-change-sub.mp4", // 0
                                          "et-morning-sub.mp4", // 1
                                          "et-muses-sub.mp4", // 2
