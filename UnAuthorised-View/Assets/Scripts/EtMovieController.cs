@@ -11,18 +11,17 @@ public class EtMovieController : MonoBehaviour
     // ---------------------------------- Movies --------------------------------------
     VideoPlayer videoPlayer;
     public RenderTexture renderTexture;
-    private GameObject canvas;
     int lastMovieWatched = 0;
 
-    // ---------------------------------- Buttons -------------------------------------
+    // ------------------------------ TiltBrush Spheres -------------------------------
     Transform selectedHierarchy;
     Transform unSelectedHierarchy;
     Transform watchedHierarchy;
-    GameObject tiltBrushButtons;
+    GameObject tiltBrushSpheres;
 
-    public List<GameObject> butnsSelectedArr = new List<GameObject>();
-    public List<GameObject> butUnSelectedArr = new List<GameObject>();
-    public List<GameObject> buttonsWatchedArr = new List<GameObject>();
+    public List<GameObject> interactionTargetSelectedArr = new List<GameObject>();
+    public List<GameObject> interactionTargetUnSelectedArr = new List<GameObject>();
+    public List<GameObject> ineractionTargetWatchedArr = new List<GameObject>();
 
     bool[] isSelected = new bool[6];        // is it selected
     bool[] isWatched = new bool[6];         // is it hidden
@@ -38,6 +37,10 @@ public class EtMovieController : MonoBehaviour
                                          "et-memory-sub.mp4", // 4
                                          "et-discovery-sub.mp4" };  // 5
 
+    // ----------------------------- Look Around You ---------------------------------
+
+    GameObject lookAroundYouText;
+    
     // ---------------------------------- State -------------------------------------
     enum ExperienceState
     {
@@ -62,9 +65,9 @@ public class EtMovieController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        tiltBrushButtons    = GameObject.Find("TiltBrushButtons");
+        tiltBrushSpheres = GameObject.Find("TiltBrushSpheres");
 
-        // Three lots of button
+        // Three types of interaction target
         selectedHierarchy   = GameObject.Find("Selected").transform;
         unSelectedHierarchy = GameObject.Find("Unselected").transform;
         watchedHierarchy     = GameObject.Find("Hidden").transform;
@@ -72,9 +75,9 @@ public class EtMovieController : MonoBehaviour
         // Find the children
         for (int i = 0; i < 6; i++)
         {
-            butnsSelectedArr.Add(selectedHierarchy.GetChild(i).gameObject);
-            butUnSelectedArr.Add(unSelectedHierarchy.GetChild(i).gameObject);
-            buttonsWatchedArr.Add(watchedHierarchy.GetChild(i).gameObject);
+            interactionTargetSelectedArr.Add(selectedHierarchy.GetChild(i).gameObject);
+            interactionTargetUnSelectedArr.Add(unSelectedHierarchy.GetChild(i).gameObject);
+            ineractionTargetWatchedArr.Add(watchedHierarchy.GetChild(i).gameObject);
         }
 
         // Setup the video target and callback
@@ -84,18 +87,22 @@ public class EtMovieController : MonoBehaviour
 
         videoPlayer.loopPointReached += EndReached;
 
-        // Find the canvas
-        canvas = GameObject.Find("Canvases");
+        // Find the look around you text
+        lookAroundYouText = GameObject.Find("LookAroundYouText");
 
+        // Start the experience as Resetted
         SetExperienceState(ExperienceState.ResetExperience);
     }
 
     public void Reset()
     {
-        // ---------------------------------- Buttons -------------------------------------
+        // ---------------------------- Interaction Targets --------------------------
         SetNothingWatched();
         HideButtons();
         UnselectButtons();
+
+        // ------------------------------- Look Around You -----------------------------
+        lookAroundYouText.SetActive(true);
 
         // ---------------------------------- Movies --------------------------------------
         videoPlayer.Stop();
@@ -118,12 +125,12 @@ public class EtMovieController : MonoBehaviour
 
     private void ShowButtons()
     {
-        tiltBrushButtons.SetActive(true);
+        tiltBrushSpheres.SetActive(true);
     }
 
     void HideButtons()
     {
-        tiltBrushButtons.SetActive(false);
+        tiltBrushSpheres.SetActive(false);
     }
 
     void SetButtonStates()
@@ -131,17 +138,17 @@ public class EtMovieController : MonoBehaviour
         for (int i = 0; i < 6; i++)
         {
             // Choice between selected and unselected
-            butnsSelectedArr[i].SetActive(isSelected[i]);
-            butUnSelectedArr[i].SetActive(!isSelected[i]);
+            interactionTargetSelectedArr[i].SetActive(isSelected[i]);
+            interactionTargetUnSelectedArr[i].SetActive(!isSelected[i]);
 
             if (isWatched[i] == true)
             {
-                butnsSelectedArr[i].SetActive(false);
-                butUnSelectedArr[i].SetActive(false);
+                interactionTargetSelectedArr[i].SetActive(false);
+                interactionTargetUnSelectedArr[i].SetActive(false);
             }
 
             // Make the hidden buttons visible or invisible
-            buttonsWatchedArr[i].SetActive( isWatched[i]);
+            ineractionTargetWatchedArr[i].SetActive( isWatched[i]);
         }
     }
 
@@ -367,12 +374,13 @@ public class EtMovieController : MonoBehaviour
             
             // User looking around
             case ExperienceState.LookAround:
-                SetExperienceState(ExperienceState.StartPlayingMovies);
+                //SetExperienceState(ExperienceState.StartPlayingMovies);
                 break;
 
             // Reveals the Tiltbrush spheres
             case ExperienceState.StartPlayingMovies:
                 Debug.Log("ExperienceState.StartPlayingMovies");
+                lookAroundYouText.SetActive(false);
                 ShowButtons();
                 SetExperienceState(ExperienceState.PlayingMovies);
                 break;
