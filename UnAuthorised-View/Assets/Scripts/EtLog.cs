@@ -18,12 +18,13 @@ public class EtLog : MonoBehaviour
         Debug.Log("Log file created at: " + fileName);
         Write("Log started");
 
-        BWEventManager.StartListening("Play Movie1", PlayMovie1);
-        BWEventManager.StartListening("Play Movie2", PlayMovie2);
-        BWEventManager.StartListening("Play Movie3", PlayMovie3);
-        BWEventManager.StartListening("Hide Buttons", HideButtons);
-        BWEventManager.StartListening("Headset On", HeadsetOn);
-        BWEventManager.StartListening("Headset Off", HeadsetOff);
+        // Initialise these to get full logs if you're deploying this
+        //BWEventManager.StartListening("Play Movie1", PlayMovie1);
+        //BWEventManager.StartListening("Play Movie2", PlayMovie2);
+        //BWEventManager.StartListening("Play Movie3", PlayMovie3);
+        //BWEventManager.StartListening("Hide Buttons", HideButtons);
+        //BWEventManager.StartListening("Headset On", HeadsetOn);
+        //BWEventManager.StartListening("Headset Off", HeadsetOff);
     }
 
     void Write(string logging)

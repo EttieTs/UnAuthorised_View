@@ -142,7 +142,7 @@ public class BWCameraController : MonoBehaviour
 
         if (UnityEngine.XR.XRSettings.isDeviceActive)
         {
-            Debug.Log("VR present");
+            //Debug.Log("VR present");
         }
     }
 }

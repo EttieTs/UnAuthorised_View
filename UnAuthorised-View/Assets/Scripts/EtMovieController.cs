@@ -12,7 +12,6 @@ public class EtMovieController : MonoBehaviour
     VideoPlayer videoPlayer;
     public RenderTexture renderTexture;
     private GameObject canvas;
-    static bool lastIsUserPresentNow = false;
     int lastMovieWatched = 0;
 
     // ---------------------------------- Buttons -------------------------------------
@@ -100,7 +99,6 @@ public class EtMovieController : MonoBehaviour
 
         // ---------------------------------- Movies --------------------------------------
         videoPlayer.Stop();
-        lastIsUserPresentNow = IsHeadsetPresent();
         ClearOutRenderTexture(renderTexture);
         PlayStartMovie();
     }
@@ -196,7 +194,7 @@ public class EtMovieController : MonoBehaviour
         //Debug.Log("Pause");
         videoPlayer.Pause();
     }
-    bool IsHeadsetPresent()
+    bool IsHeadsetWorn()
     {
         // Stop the video when the headset is taken off
         InputDevice device = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
@@ -288,7 +286,7 @@ public class EtMovieController : MonoBehaviour
         {
             int index = hit.transform.GetSiblingIndex();
 
-            Debug.Log("HIT index: " + index + " name " + hit.transform.name);
+            //Debug.Log("HIT index: " + index + " name " + hit.transform.name);
 
             isSelected[index] = true;
 
@@ -346,27 +344,6 @@ public class EtMovieController : MonoBehaviour
             Debug.Log("Looking down");
             ShowButtons();
         }
-
-        // Check if headset is present
-        bool isUserPresentNow = IsHeadsetPresent();
-
-        // Has this changed since last time
-        if (isUserPresentNow != lastIsUserPresentNow)
-        {
-            if (isUserPresentNow)
-            {
-                BWEventManager.TriggerEvent("Headset On");
-            }
-            else
-            {
-                BWEventManager.TriggerEvent("Headset Off");
-
-                Reset();
-            }
-
-            // Keep track of the change
-            lastIsUserPresentNow = isUserPresentNow;
-        }
     }
 
 
@@ -378,6 +355,18 @@ public class EtMovieController : MonoBehaviour
             case ExperienceState.ResetExperience:
                 Debug.Log("ExperienceState.Reset");
                 Reset();
+                SetExperienceState(ExperienceState.WaitingForHeadsetToBeWorn);
+                break;
+            
+            case ExperienceState.WaitingForHeadsetToBeWorn:
+                if (IsHeadsetWorn())
+                {
+                    SetExperienceState(ExperienceState.LookAround);
+                }
+                break;
+            
+            // User looking around
+            case ExperienceState.LookAround:
                 SetExperienceState(ExperienceState.StartPlayingMovies);
                 break;
 
@@ -392,6 +381,11 @@ public class EtMovieController : MonoBehaviour
             case ExperienceState.PlayingMovies:
                 Debug.Log("ExperienceState.PlayingMovies");
                 Update_WatchingMovies();
+
+                if ( !IsHeadsetWorn())
+                {
+                    SetExperienceState(ExperienceState.ResetExperience);
+                }
                 break;
         }
     }
