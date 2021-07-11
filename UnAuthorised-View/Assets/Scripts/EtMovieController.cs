@@ -38,7 +38,27 @@ public class EtMovieController : MonoBehaviour
                                          "et-fire-sub.mp4", // 3
                                          "et-memory-sub.mp4", // 4
                                          "et-discovery-sub.mp4" };  // 5
+
+    // ---------------------------------- State -------------------------------------
+    enum ExperienceState
+    {
+        ResetExperience,
+        WaitingForHeadsetToBeWorn,
+        LookAround,
+        StartPlayingMovies,
+        PlayingMovies,
+    };
+
+    ExperienceState experienceState;
+
     // --------------------------------------------------------------------------------
+
+    void SetExperienceState(ExperienceState newState)
+    {
+        experienceState = newState;
+    }
+    // --------------------------------------------------------------------------------
+
 
     // Start is called before the first frame update
     void Start()
@@ -68,14 +88,14 @@ public class EtMovieController : MonoBehaviour
         // Find the canvas
         canvas = GameObject.Find("Canvases");
 
-        Reset();
+        SetExperienceState(ExperienceState.ResetExperience);
     }
 
     public void Reset()
     {
         // ---------------------------------- Buttons -------------------------------------
         SetNothingWatched();
-        ShowButtons();
+        HideButtons();
         UnselectButtons();
 
         // ---------------------------------- Movies --------------------------------------
@@ -248,6 +268,12 @@ public class EtMovieController : MonoBehaviour
         {
             isSelected[5] = !isSelected[5];
         }
+
+        if (BWKeyboard.GetKeyEscapeDown())
+        {
+            Debug.Log("Escape");
+            SetExperienceState(ExperienceState.ResetExperience);
+        }
     }
 
     void RaycastGaze()
@@ -301,18 +327,13 @@ public class EtMovieController : MonoBehaviour
         }
     }
 
-    void Update()
+
+    void Update_WatchingMovies()
     {
         UnselectButtons();
         RaycastGaze();
         DebugKeys();
         SetButtonStates();
-
-        if (BWKeyboard.GetKeyEscapeDown())
-        {
-            Debug.Log("Escape");
-            Reset();
-        }
 
         Transform camera = GameObject.Find("Main Camera").transform;
 
@@ -320,7 +341,7 @@ public class EtMovieController : MonoBehaviour
 
         // Debug.Log(yawPitchRoll.x);
 
-        if( (yawPitchRoll.x > 45.0f) && (yawPitchRoll.x < 60.0f ) )
+        if ((yawPitchRoll.x > 45.0f) && (yawPitchRoll.x < 60.0f))
         {
             Debug.Log("Looking down");
             ShowButtons();
@@ -345,6 +366,33 @@ public class EtMovieController : MonoBehaviour
 
             // Keep track of the change
             lastIsUserPresentNow = isUserPresentNow;
+        }
+    }
+
+
+    void Update()
+    {
+        switch (experienceState)
+        {
+            // Resets the experience
+            case ExperienceState.ResetExperience:
+                Debug.Log("ExperienceState.Reset");
+                Reset();
+                SetExperienceState(ExperienceState.StartPlayingMovies);
+                break;
+
+            // Reveals the Tiltbrush spheres
+            case ExperienceState.StartPlayingMovies:
+                Debug.Log("ExperienceState.StartPlayingMovies");
+                ShowButtons();
+                SetExperienceState(ExperienceState.PlayingMovies);
+                break;
+
+            // Main Experience
+            case ExperienceState.PlayingMovies:
+                Debug.Log("ExperienceState.PlayingMovies");
+                Update_WatchingMovies();
+                break;
         }
     }
 }
