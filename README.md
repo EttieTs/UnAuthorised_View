@@ -29,6 +29,12 @@ We can move states after specific amount of time has passed but this doesn't acc
 
 We can append this onto our Look Around You message to debug. But this might allow a future version to have a progress bar that changes as we look around. 
 
+`
 #if UNITY_EDITOR
         lookAroundYouText.GetComponent<Text>().text = "Look Around You: " + lookAroundYouCount.ToString();
 #endif
+`
+
+Particle effect follows tutorial from:
+
+https://www.youtube.com/watch?v=wQJ0_TqoLr4
