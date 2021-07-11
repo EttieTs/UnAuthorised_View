@@ -31,7 +31,9 @@ We can append this onto our Look Around You message to debug. But this might all
 
 `
 #if UNITY_EDITOR
+
         lookAroundYouText.GetComponent<Text>().text = "Look Around You: " + lookAroundYouCount.ToString();
+        
 #endif
 `
 
