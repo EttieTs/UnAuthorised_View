@@ -27,15 +27,15 @@ public class EtMovieController : MonoBehaviour
     bool[] isWatched = new bool[6];         // is it hidden
      
     float timeSelected = 0;
-    const float SelectionTime = 5;          // 5 seconds
+    const float SelectionTime = 4;          // 4 seconds
 
-    string StartMovie = "et-ls-startspace_2_1.mp4";
-    string[] MovieNames = new string[] { "et-change-sub.mp4", // 0
-                                         "et-morning-sub.mp4", // 1
-                                         "et-muses-sub.mp4", // 2
-                                         "et-fire-sub.mp4", // 3
-                                         "et-memory-sub.mp4", // 4
-                                         "et-discovery-sub.mp4" };  // 5
+    string StartMovie = "360-env-05.mp4";
+    string[] MovieNames = new string[] { "1-story-b.mp4", // 0
+                                         "2-story-c.mp4", // 1
+                                         "3-story-l.mp4", // 2
+                                         "4-story-s.mp4", // 3
+                                         "5-story-v.mp4", // 4
+                                         "6-story-p.mp4" };  // 5
 
     // ----------------------------- Look Around You ---------------------------------
 
