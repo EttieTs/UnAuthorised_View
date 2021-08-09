@@ -42,8 +42,11 @@ public class EtMovieController : MonoBehaviour
     GameObject lookAroundYou;
     GameObject lookAroundYouText;
     Vector3 lastEuler1, lastEuler2;
-    int lookAroundYouCount = 0;
-    const int LookAroundAmount = 50;
+    int lookAroundYouCount = 0;      // Current count (gets incremented as we move)
+    //const int LookAroundAmount = 50;
+    const int LookAroundAmount = 10; // Short look around
+
+    public bool forceIsWorn = false;
 
     // ---------------------------------- State -------------------------------------
     enum ExperienceState
@@ -213,6 +216,11 @@ public class EtMovieController : MonoBehaviour
     }
     bool IsHeadsetWorn()
     {
+        if( forceIsWorn )   // if we are debugging allow us to set a state
+        {
+            return true;
+        }
+
         // Stop the video when the headset is taken off
         InputDevice device = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
         if (device.isValid)
@@ -416,6 +424,7 @@ public class EtMovieController : MonoBehaviour
         return true;
     }
 
+
     void Update()
     {
         switch (experienceState)
@@ -428,6 +437,10 @@ public class EtMovieController : MonoBehaviour
                 break;
             
             case ExperienceState.WaitingForHeadsetToBeWorn:
+                if( BWKeyboard.GetKeyW() )
+                {
+                    forceIsWorn = true;
+                }
                 if (IsHeadsetWorn())
                 {
                     SetExperienceState(ExperienceState.LookAround);
